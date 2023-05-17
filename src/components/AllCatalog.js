@@ -1,35 +1,87 @@
 import React from "react";
 import ProductItem from "./ProductItem";
-import CatalogHeader from "./CatalogHeader";
 
-function AllCatalog(props) {
-    const [prod, setProd] = React.useState([])
+function AllCatalog() {
+    const [catalogs, setCatalog] = React.useState([])
+    const [products, setProducts] = React.useState([])
+    const [productsFromCatalog, setproductsFromCatalog] = React.useState([])
+    const [from, setFrom] = React.useState('')
 
     function handleChange(event) {
-        setProd(event.target.value)
+        setFrom(event.target.value)
     }
-    function getAll() {
-        return props.allProducts.map((elem, index) => {
-            return <ProductItem title={elem.title} image={elem.image} price={elem.price} key={index} />
-        })
+    React.useEffect(() => {
+        getAllFromApi()
+    }, [])
+
+    React.useEffect(() => {
+        getAllFromApi()
+        getCatalogsFromApi()
+        getProductsFromCatalog(from)
+
+    }, [from])
+
+    async function getAllFromApi() {
+        try {
+            let response = await fetch('https://fakestoreapi.com/products')
+            if (!response.ok) {
+                throw new Error('ошибка получения данных с сервера')
+            }
+            let json = await response.json()
+            setProducts(json)
+        } catch (err) {
+            console.log(err)
+        }
     }
-    function getProductsByCatalog(from) {
-        fetch(`https://fakestoreapi.com/products/category/${from}`)
-            .then(res => res.json())
-            .then(json => {
-                return json.map((elem, index) => {
-                    return <ProductItem title={elem.title} image={elem.image} price={elem.price} key={index} />
-                })
-            })
+
+    async function getCatalogsFromApi() {
+        try {
+            let response = await fetch('https://fakestoreapi.com/products/categories')
+            if (!response.ok) {
+                throw new Error('ошибка получения данных с сервера')
+            }
+            let json = await response.json()
+            setCatalog(json)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    async function getProductsFromCatalog(from) {
+        try {
+            let response = await fetch(`https://fakestoreapi.com/products/category/${from}`)
+            if (!response.ok) {
+                throw new Error('Ошибка получения данный с сервера')
+            }
+            let json = await response.json()
+            setproductsFromCatalog(json)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    function getResult() {
+        if (from !== 'All') {
+            return productsFromCatalog.map((elem, index) => (
+                <ProductItem key={index} title={elem.title} image={elem.image} price={elem.price} />
+            ));
+
+        } else {
+            return products.map((elem, index) => (
+                <ProductItem key={index} title={elem.title} image={elem.image} price={elem.price} />
+            ));
+        }
+
     }
 
     return <div className="catalog">
         <div className="catalogHeader">
             <div className="catalogTitle">
-                <select value={prod} onChange={(event) => handleChange(event)}>
-                    {props.catalog.map((elem, index) => {
-                        return <option key={index}>{elem}</option>
-                    })}
+                <select onChange={(event) => { handleChange(event) }}>
+                    <option key={1919}>All</option>
+                    {catalogs.map((elem, index) => (
+                        <option key={index}>{elem}</option>
+                    ))}
                 </select>
             </div>
             <div className="catalogSearch">
@@ -38,7 +90,8 @@ function AllCatalog(props) {
             </div>
         </div>
         <div className="catalogProducts">
-            {getProductsByCatalog(prod)}
+            {getResult()}
+
         </div>
     </div>
 }

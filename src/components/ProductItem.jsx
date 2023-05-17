@@ -1,10 +1,19 @@
 import React from "react";
 
 function ProductItem(props) {
+    const [like, setLike] = React.useState(false)
+    const [addOnCart, setAddOnCart] = React.useState(false)
+    function handleCart() {
+        setAddOnCart(!addOnCart)
+    }
+
+    function handleLike() {
+        setLike(!like)
+    }
     return (
         <div className="productItem">
             <div className="likeItem">
-                <img src="img/likeitem.svg" />
+                <img onClick={handleLike} src={like ? 'img/likeitem-checked.svg' : 'img/likeitem.svg'} />
             </div>
             <div className="productImg">
                 <img height={112} src={props.image} />
@@ -16,7 +25,7 @@ function ProductItem(props) {
                     <span className="price">{props.price} руб</span>
                 </div>
                 <div className="onCart">
-                    <img src="img/oncart.svg" />
+                    <img onClick={handleCart} src={addOnCart ? "img/oncart-checked.svg" : 'img/oncart.svg'} />
                 </div>
             </div>
         </div>

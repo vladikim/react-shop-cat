@@ -1,5 +1,5 @@
 import React from "react";
-function Header() {
+function Header(props) {
     return (
         <div className="header">
             <div className="headerLeft">
@@ -11,7 +11,7 @@ function Header() {
             </div>
             <div className="headerRight">
                 <div className="cart">
-                    <img src="img/cart.svg" />
+                    <img src="img/cart.svg" onClick={props.onCart} />
                     <span>1205p</span>
                 </div>
                 <div className="heart">
