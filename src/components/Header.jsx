@@ -11,7 +11,7 @@ function Header(props) {
             </div>
             <div className="headerRight">
                 <div className="cart">
-                    <img src="img/cart.svg" onClick={props.onCart} />
+                    <img src="img/cart.svg" onClick={props.onOrOffCart} />
                     <span>1205p</span>
                 </div>
                 <div className="heart">

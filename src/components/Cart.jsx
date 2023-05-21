@@ -1,23 +1,17 @@
 import React from "react";
-function OverLay(props) {
+import ItemInCart from "./ItemInCart";
+function Cart(props) {
     return (
         <div className="cartContainer">
             <div className="cartRight">
                 <div className="cartHeader">
                     <div>Корзина</div>
-                    <div> <img src="img/cancel.svg" width={32} onClick={props.onCart} /></div>
+                    <div> <img src="img/cancel.svg" width={32} onClick={props.onOrOffCart} /></div>
                 </div>
-
-                <div className="cartInfo">
-                    <div className="cardInCart">
-                        <img width={70} height={70} src="img/person.svg" />
-                        <div className="discribeInCart">
-                            <span>Мужские Кроссовки Nike Air Max 270</span>
-                            <b>12 999 руб.</b>
-                        </div>
-                        <img width={32} height={32} src="img/cancel.svg" />
-                    </div>
-                </div>
+                {props.productsInCart.map(elem => <ItemInCart deleteProductsInCart={props.deleteProductsInCart}
+                    title={elem.title}
+                    price={elem.price}
+                    image={elem.image} />)}
                 <div className="cartBottom">
                     <div className="order">
                         <ul className="total">
@@ -43,4 +37,4 @@ function OverLay(props) {
         </div>
     )
 }
-export default OverLay
+export default Cart

@@ -206,6 +206,7 @@
 
     .cartInfo {
       align-self: center;
+      margin-bottom: 10px;
 
       .cardInCart {
         box-sizing: border-box;
@@ -230,14 +231,8 @@
           color: #000000;
           gap: 8px
         }
-
       }
-
     }
-
-
-
-
   }
 
   .total {
@@ -268,4 +263,37 @@
     }
   }
 
+}
+
+.infoMain {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+
+  .infoTitle {
+    display: flex;
+    justify-content: space-between;
+
+    span {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 29px;
+    }
+  }
+
+  .infoDescription {
+    background: #FFFFFF;
+    border: 1px solid #F8F8F8;
+    box-shadow: 0px 14px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 40px;
+    height: 300px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px
+  }
 }
