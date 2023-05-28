@@ -7,11 +7,14 @@ function Cart(props) {
                 <div className="cartHeader">
                     <div>Корзина</div>
                     <div> <img src="img/cancel.svg" width={32} onClick={props.onOrOffCart} /></div>
-                </div>
-                {props.productsInCart.map(elem => <ItemInCart deleteProductsInCart={props.deleteProductsInCart}
-                    title={elem.title}
-                    price={elem.price}
-                    image={elem.image} />)}
+                </div >
+                {props.productsInCart.map(elem => {
+                    return <ItemInCart image={elem.image}
+                        price={elem.price}
+                        title={elem.title}
+                        key={elem.id}
+                    />
+                })}
                 <div className="cartBottom">
                     <div className="order">
                         <ul className="total">

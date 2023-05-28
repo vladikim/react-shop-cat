@@ -1,9 +1,14 @@
 import React from "react";
+import { AppContext } from "../App";
 
 function ItemInCart(props) {
-    function deleteButton() {
-        props.deleteProductsInCart(props)
+    const { addProductsinCart } = React.useContext(AppContext)
+    const { productsInCart } = React.useContext(AppContext)
+
+    function deleteOrNot() {
+        addProductsinCart(props)
     }
+
     return (
         <div className="cartInfo">
             <div className="cardInCart">
@@ -12,7 +17,7 @@ function ItemInCart(props) {
                     <span>{props.title}</span>
                     <b>{props.price} руб.</b>
                 </div>
-                <img width={32} height={32} src="img/cancel.svg" onClick={deleteButton} />
+                <img width={32} height={32} src="img/cancel.svg" onClick={deleteOrNot} />
             </div>
         </div>
     )

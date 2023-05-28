@@ -3,56 +3,114 @@ import Style from './index.scss'
 import Header from "./components/Header";
 import AllCatalog from "./components/AllCatalog";
 import Cart from "./components/Cart";
-import Info from "./components/Info";
+import { Route, Routes } from "react-router-dom";
+import Favorites from "./components/favorites";
+
+export const AppContext = React.createContext({})
 
 function App() {
-  const [showInfo, setShowInfo] = React.useState(null)
-  const [cancelCart, setCancelCart] = React.useState(false)
+  const [allProducts, setAllProducts] = React.useState([])
+  const [allCatalog, setAllCatalog] = React.useState([])
+  const [productsFromCatalog, setProductsFromCatalog] = React.useState([])
   const [productsInCart, setProductsInCart] = React.useState([])
+  const [cancelCart, setCancelCart] = React.useState(false)
+  const [from, setFrom] = React.useState('')
+  const [favoritesProducts, setFavoritesProducts] = React.useState([])
 
-  function deleteButton(like) {
-    if (!like) {
-      deleteProductsInCart()
+  function addProductsinCart(product) {
+    if (!productsInCart.find(elem => elem.title === product.title)) {
+      setProductsInCart([...productsInCart, product])
     } else {
-      addProductsToCart()
+      setProductsInCart(productsInCart.filter(elem => elem.title !== product.title))
     }
   }
 
-  function handleInfo(product) {
-    setShowInfo(product)
-    console.log(showInfo)
+  function addInFavorites(product) {
+    if (favoritesProducts.find(elem => elem.title === product.title)) {
+      setFavoritesProducts(favoritesProducts.filter(elem => elem.title !== product.title))
+    } else {
+      setFavoritesProducts([...favoritesProducts, product])
+    }
+    console.log(favoritesProducts)
   }
 
-  function cancelInfo() {
-    setShowInfo(null)
+  function IsFavorited(product) {
+    return favoritesProducts.some(elem => elem.title === product.title)
   }
 
-  function deleteProductsInCart(product) {
-    setProductsInCart(productsInCart.filter(elem => {
-      if (elem.title !== product.title) {
-        return true
-      } else { return false }
-    }))
+  function isAdded(product) {
+    return productsInCart.some(elem => elem.title === product.title)
   }
 
-  function addProductsToCart(product) {
-    setProductsInCart([...productsInCart, product])
+  function handleFrom(event) {
+    setFrom(event.target.value)
   }
+
+  async function getProductsFromCatalog(from) {
+    try {
+      let response = await fetch(`https://fakestoreapi.com/products/category/${from}`)
+      if (!response.ok) {
+        throw new Error('Ошибка получения данный с сервера')
+      }
+      let json = await response.json()
+      setProductsFromCatalog(json)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async function getCatalogsFromApi() {
+    try {
+      let response = await fetch('https://fakestoreapi.com/products/categories')
+      if (!response.ok) {
+        throw new Error('ошибка получения данных с сервера')
+      }
+      let json = await response.json()
+      setAllCatalog(json)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  async function getAllFromApi() {
+    try {
+      let response = await fetch('https://fakestoreapi.com/products')
+      if (!response.ok) {
+        throw new Error('ошибка получения данных с сервера')
+      }
+      let json = await response.json()
+      setAllProducts(json)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  React.useEffect(() => {
+    getAllFromApi()
+    getCatalogsFromApi()
+  }, [])
+
+  React.useEffect(() => {
+    getProductsFromCatalog(from)
+  }, [from])
 
   function onOrOffCart() {
     setCancelCart(!cancelCart)
   }
   return (
-    <div className="mainContainer">
-      {cancelCart ? <Cart onOrOffCart={onOrOffCart}
-        productsInCart={productsInCart}
-        deleteProductsInCart={deleteProductsInCart} /> : null}
+    <AppContext.Provider value={{ allProducts, allCatalog, productsFromCatalog, from, handleFrom, addProductsinCart, isAdded, addProductsinCart, addInFavorites, IsFavorited }}>
+      <div className="mainContainer">
 
-      <Header cancelCart={cancelCart} onOrOffCart={onOrOffCart} />
+        {cancelCart ? <Cart onOrOffCart={onOrOffCart} productsInCart={productsInCart} /> : null}
+        <Header cancelCart={cancelCart} onOrOffCart={onOrOffCart} />
+        <Routes exact='true' >
+          <Route element={<AllCatalog />} path='/' />
+          <Route element={<Favorites favoritesProducts={favoritesProducts} />} path='/favorites' />
+        </Routes>
 
-      {showInfo
-        ? <Info info={showInfo} cancelInfo={cancelInfo} />
-        : <AllCatalog handleInfo={handleInfo} addProductsToCart={addProductsToCart} deleteButton={deleteButton} />}
-    </div>)
+      </div>
+    </AppContext.Provider >
+  )
+
 }
 export default App

@@ -7,7 +7,7 @@ function Info(props) {
                 <span>
                     Описание товара:
                 </span>
-                <div className="InfoCancel"><img src="img/cancel.svg" width={32} onClick={props.cancelInfo} /></div>
+                <div className="InfoCancel"><img src="img/cancel.svg" width={32} /></div>
             </div>
             <div className="infoDescription">
                 <div className="infoImage">
